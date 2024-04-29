@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 market_comp = pd.read_excel('./assets/Case.xlsx', sheet_name='Market - Companies')
 portfolio_comp = pd.read_excel('./assets/Case.xlsx', sheet_name='Portfolio - Companies')
@@ -14,4 +15,12 @@ merged = pd.DataFrame.merge(merged, market_comp, left_on='company_name', right_o
 print(merged)
 print(merged.columns)
 
-pd.DataFrame.to_excel(merged, './assets/Portfolio.xlsx')
+merged['kpi'] = merged['limit'].div(merged['emissions[tCO2/year]'])
+
+merged = pd.DataFrame.sort_values(merged, by='kpi')
+
+ax = merged['kpi'].plot(kind='bar', title='KPI', xlabel='name', figsize=(8, 15))
+ax.set_xticklabels(merged['name'])
+plt.savefig('KPI-ING.png')
+plt.show()
+
